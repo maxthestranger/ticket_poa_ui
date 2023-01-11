@@ -24,13 +24,13 @@ function Login() {
             />
           </div>
           <div className="mb-7">
-            <div className="flex items-center justify-between mb-5">
+            <div className="flex items-center justify-between">
               <Label htmlFor="password">
                 Password <span className="text-red-500">*</span>
               </Label>
               <a
                 href="forgot-password"
-                className="font-bold text-primary text-base hover:underline"
+                className="font-bold text-primary text-base mb-5 hover:underline"
               >
                 Forgot Password?
               </a>
