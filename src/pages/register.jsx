@@ -23,7 +23,7 @@ function Register() {
               placeholder="Enter your email"
             />
           </div>
-          <div className="mb-7 flex items-center justify-between gap-4">
+          <div className="mb-7 flex flex-col md:flex-row items-center justify-between gap-4">
             <div>
               <Label htmlFor="first_name">
                 First name <span className="text-red-500">*</span>
