@@ -1,8 +1,19 @@
 import { motion } from "framer-motion";
 import { Label, Input, Button } from "../components/common";
 import AuthLayout from "../layouts/authLayout";
+import { useForm } from "../hooks/useForm";
 
 function ForgotPassword() {
+  const {
+    formData,
+    errors,
+    isSubmitting,
+    handleChange,
+    handleBlur,
+    handleSubmit,
+  } = useForm({
+    email: "",
+  });
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -11,7 +22,7 @@ function ForgotPassword() {
       exit={{ opacity: 0 }}
     >
       <AuthLayout title="Request Password Reset">
-        <form>
+        <form onSubmit={handleSubmit}>
           <div className="mb-7">
             <Label htmlFor="email">
               Email <span className="text-red-500">*</span>
@@ -21,11 +32,19 @@ function ForgotPassword() {
               name="email"
               id="email"
               placeholder="Enter your email"
+              value={formData.email}
+              onChange={handleChange}
+              onBlur={handleBlur}
             />
+            {errors.email && (
+              <span className="text-red-500 mt-2 block">{errors.email}</span>
+            )}
           </div>
 
           <div className="mb-7">
-            <Button type="submit">Request</Button>
+            <Button type="submit" disabled={isSubmitting}>
+              Request
+            </Button>
           </div>
         </form>
       </AuthLayout>

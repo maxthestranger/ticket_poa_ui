@@ -1,8 +1,24 @@
 import { motion } from "framer-motion";
 import { Label, Input, Button } from "../components/common";
 import AuthLayout from "../layouts/authLayout";
+import { useForm } from "../hooks/useForm";
 
 function Register() {
+  const {
+    formData,
+    errors,
+    isSubmitting,
+    handleChange,
+    handleBlur,
+    handleSubmit,
+  } = useForm({
+    email: "",
+    first_name: "",
+    last_name: "",
+    password: "",
+    confirm_password: "",
+  });
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -11,7 +27,7 @@ function Register() {
       exit={{ opacity: 0 }}
     >
       <AuthLayout title="Apply as an Agent">
-        <form>
+        <form onSubmit={handleSubmit}>
           <div className="mb-7">
             <Label htmlFor="email">
               Email <span className="text-red-500">*</span>
@@ -21,7 +37,13 @@ function Register() {
               name="email"
               id="email"
               placeholder="Enter your email"
+              value={formData.email}
+              onChange={handleChange}
+              onBlur={handleBlur}
             />
+            {errors.email && (
+              <span className="text-red-500 mt-2 block">{errors.email}</span>
+            )}
           </div>
           <div className="mb-7 flex flex-col md:flex-row items-center justify-between gap-4">
             <div>
@@ -33,7 +55,15 @@ function Register() {
                 name="first_name"
                 placeholder="Enter your first name"
                 id="first_name"
+                value={formData.first_name}
+                onChange={handleChange}
+                onBlur={handleBlur}
               />
+              {errors.first_name && (
+                <span className="text-red-500 mt-2 block">
+                  {errors.first_name}
+                </span>
+              )}
             </div>
             <div>
               <Label htmlFor="last_name">
@@ -44,7 +74,15 @@ function Register() {
                 name="last_name"
                 placeholder="Enter your last name"
                 id="last_name"
+                value={formData.last_name}
+                onChange={handleChange}
+                onBlur={handleBlur}
               />
+              {errors.last_name && (
+                <span className="text-red-500 mt-2 block">
+                  {errors.last_name}
+                </span>
+              )}
             </div>
           </div>
           <div className="mb-7">
@@ -56,21 +94,37 @@ function Register() {
               name="password"
               placeholder="Enter your password"
               id="password"
+              value={formData.password}
+              onChange={handleChange}
+              onBlur={handleBlur}
             />
+            {errors.password && (
+              <span className="text-red-500 mt-2 block">{errors.password}</span>
+            )}
           </div>
           <div className="mb-7">
             <Label htmlFor="password">
               Confirm Password <span className="text-red-500">*</span>
             </Label>
             <Input
-              type="confirm_password"
+              type="password"
               name="confirm_password"
               placeholder="Confirm the password"
               id="confirm_password"
+              value={formData.confirm_password}
+              onChange={handleChange}
+              onBlur={handleBlur}
             />
+            {errors.confirm_password && (
+              <span className="text-red-500 mt-2 block">
+                {errors.confirm_password}
+              </span>
+            )}
           </div>
           <div className="mb-7">
-            <Button type="submit">Sign up</Button>
+            <Button type="submit" disabled={isSubmitting}>
+              Sign up
+            </Button>
           </div>
           <p className="text-dark text-base font-medium">
             Already have an account?{" "}
