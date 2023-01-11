@@ -1,4 +1,4 @@
-import logo from "../assets/img/logo.svg";
+import logo from "../assets/img/icons/logo_footer.svg";
 
 function Login() {
   return (

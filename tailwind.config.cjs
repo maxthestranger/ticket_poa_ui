@@ -5,11 +5,11 @@ module.exports = {
     extend: {
       colors: {
         secondary: "#f7f7f7",
-        dark: "#020202",
+        dark: "#03314b",
         success: "#2fd134",
-        primary: "#efa638",
+        primary: "#1cbe8e",
         info: "#2965ff",
-        muted: "#63687A",
+        muted: "#94a3b7",
         place: "#D5D5D5",
         input: "#F3F3F3",
       },
