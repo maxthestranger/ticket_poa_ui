@@ -1,14 +1,16 @@
 import { useState } from "react";
 import { debounce, head } from "lodash";
 import { useDispatch } from "react-redux";
-import { redirect } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { validate } from "../utils/validation";
 import { saveToLocalStorage } from "../utils/storage";
+import { mergeNames } from "../utils/helper";
 
 export const useForm = (initialValues, loading, error, success, api, url) => {
   const [formData, setFormData] = useState(initialValues);
   const [errors, setErrors] = useState({});
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({
@@ -29,7 +31,7 @@ export const useForm = (initialValues, loading, error, success, api, url) => {
     if (Object.keys(validate(formData)).length === 0) {
       dispatch(loading());
       try {
-        const response = await api(formData);
+        const response = await api(mergeNames(formData));
         const data = {
           token: response.headers["access-token"],
           user: response.data.data,
@@ -38,7 +40,7 @@ export const useForm = (initialValues, loading, error, success, api, url) => {
         dispatch(success(data));
         saveToLocalStorage(data, "user_info");
         setFormData(initialValues);
-        redirect(url);
+        navigate(url, { replace: true });
       } catch (e) {
         console.log(e);
         // catch network error

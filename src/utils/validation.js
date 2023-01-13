@@ -17,7 +17,7 @@ export const validate = (formData) => {
             errors[key] = "Password must be at least 6 characters long";
           }
           break;
-        case "passwordConfirmation":
+        case "confirm_password":
           if (formData[key] !== formData.password) {
             errors[key] = "Passwords do not match";
           }

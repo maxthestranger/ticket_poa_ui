@@ -1,23 +1,33 @@
 import { motion } from "framer-motion";
+import { useSelector } from "react-redux";
+import {
+  authLoading,
+  authError,
+  registerSuccess,
+} from "../redux/auth/authSlice";
 import { Label, Input, Button } from "../components/common";
 import AuthLayout from "../layouts/authLayout";
 import { useForm } from "../hooks/useForm";
+import { register } from "../api/data";
 
 function Register() {
-  const {
-    formData,
-    errors,
-    isSubmitting,
-    handleChange,
-    handleBlur,
-    handleSubmit,
-  } = useForm({
-    email: "",
-    first_name: "",
-    last_name: "",
-    password: "",
-    confirm_password: "",
-  });
+  const { isLoading, error } = useSelector((state) => state.auth);
+
+  const { formData, errors, handleChange, handleBlur, handleSubmit } = useForm(
+    {
+      email: "",
+      first_name: "",
+      last_name: "",
+      password: "",
+      confirm_password: "",
+      role: "organizer",
+    },
+    authLoading,
+    authError,
+    registerSuccess,
+    register,
+    "/dashboard"
+  );
 
   return (
     <motion.div
@@ -27,6 +37,11 @@ function Register() {
       exit={{ opacity: 0 }}
     >
       <AuthLayout title="Apply as an Agent">
+        {error && (
+          <p className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-7">
+            {error}
+          </p>
+        )}
         <form onSubmit={handleSubmit}>
           <div className="mb-7">
             <Label htmlFor="email">
@@ -122,7 +137,7 @@ function Register() {
             )}
           </div>
           <div className="mb-7">
-            <Button type="submit" disabled={isSubmitting}>
+            <Button type="submit" disabled={isLoading}>
               Sign up
             </Button>
           </div>
