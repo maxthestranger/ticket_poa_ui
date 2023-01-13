@@ -1,9 +1,7 @@
 import { motion } from "framer-motion";
 import AdminLayout from "../layouts/adminLayout";
-import { useSelector } from "react-redux";
 
 function Dashboard() {
-  const { user } = useSelector((state) => state.auth);
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -12,7 +10,9 @@ function Dashboard() {
       exit={{ opacity: 0 }}
     >
       <AdminLayout title="Welcome">
-        <p>{user && user.name}</p>
+        <div className="bg-white rounded-md shadow-md p-4">
+          <h2 className="text-xl font-bold text-dark">Dashboard</h2>
+        </div>
       </AdminLayout>
     </motion.div>
   );
