@@ -1,11 +1,14 @@
 import { useState } from "react";
-import { debounce } from "lodash";
+import { debounce, head } from "lodash";
+import { useDispatch } from "react-redux";
+import { redirect } from "react-router-dom";
 import { validate } from "../utils/validation";
+import { saveToLocalStorage } from "../utils/storage";
 
-export const useForm = (initialValues) => {
+export const useForm = (initialValues, loading, error, success, api, url) => {
   const [formData, setFormData] = useState(initialValues);
   const [errors, setErrors] = useState({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
     setFormData({
@@ -14,28 +17,70 @@ export const useForm = (initialValues) => {
     });
   };
 
-  const handleBlur = debounce(() => {
-    setErrors(validate(formData));
+  const handleBlur = debounce((e) => {
+    setErrors({
+      ...errors,
+      [e.target.name]: validate(formData)[e.target.name],
+    });
   }, 1000);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setErrors(validate(formData));
-    if (Object.keys(errors).length === 0) {
-      setIsSubmitting(true);
+    if (Object.keys(validate(formData)).length === 0) {
+      dispatch(loading());
+      try {
+        const response = await api(formData);
+        const data = {
+          token: response.headers["access-token"],
+          user: response.data.data,
+        };
 
-      //  TODO: Send data to server
+        dispatch(success(data));
+        saveToLocalStorage(data, "user_info");
+        setFormData(initialValues);
+        redirect(url);
+      } catch (e) {
+        console.log(e);
+        // catch network error
+        if (!e.response) {
+          dispatch(error("Network Error"));
+          return;
+        }
+        // catch login error
+        if (e.response.status === 401) {
+          dispatch(error("Invalid email or password"));
+          return;
+        }
 
-      // TODO: Reset form
-      setFormData(initialValues);
-      setIsSubmitting(false);
+        // catch register error
+        if (e.response.status === 422) {
+          dispatch(error("Email already exists"));
+          return;
+        }
+
+        // catch forgot password error
+        if (e.response.status === 404) {
+          dispatch(error("User not found"));
+          return;
+        }
+
+        // catch reset password error
+        if (e.response.status === 403) {
+          dispatch(error("Invalid or expired token"));
+          return;
+        }
+
+        // catch unknown error
+        dispatch(error("Unknown Error"));
+      }
     }
+
+    setErrors(validate(formData));
   };
 
   return {
     formData,
     errors,
-    isSubmitting,
     handleChange,
     handleBlur,
     handleSubmit,

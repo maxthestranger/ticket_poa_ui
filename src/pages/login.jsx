@@ -1,20 +1,26 @@
 import { motion } from "framer-motion";
-import { Label, Input, Button } from "../components/common";
+import { useSelector } from "react-redux";
+import { authLoading, authError, loginSuccess } from "../redux/auth/authSlice";
 import AuthLayout from "../layouts/authLayout";
+import { Label, Input, Button } from "../components/common";
 import { useForm } from "../hooks/useForm";
+import { login } from "../api/data";
 
 function Login() {
-  const {
-    formData,
-    errors,
-    isSubmitting,
-    handleChange,
-    handleBlur,
-    handleSubmit,
-  } = useForm({
-    email: "",
-    password: "",
-  });
+  const { isLoading, error } = useSelector((state) => state.auth);
+
+  const { formData, errors, handleChange, handleBlur, handleSubmit } = useForm(
+    {
+      email: "",
+      password: "",
+    },
+    authLoading,
+    authError,
+    loginSuccess,
+    login,
+    "/dashboard"
+  );
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -23,6 +29,11 @@ function Login() {
       exit={{ opacity: 0 }}
     >
       <AuthLayout title="Agent Login">
+        {error && (
+          <p className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-7">
+            {error}
+          </p>
+        )}
         <form onSubmit={handleSubmit}>
           <div className="mb-7">
             <Label htmlFor="email">
@@ -67,7 +78,7 @@ function Login() {
             )}
           </div>
           <div className="mb-7">
-            <Button type="submit" disabled={isSubmitting}>
+            <Button type="submit" disabled={isLoading}>
               Sign in
             </Button>
           </div>

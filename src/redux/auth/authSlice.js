@@ -1,12 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { loadFromLocalStorage } from "../../utils/storage";
 
-const initialState = {
-  isLoading: false,
-  error: null,
-  success: false,
-  token: null,
-  user: null,
-};
+const data = loadFromLocalStorage("user_info") || {};
+
+const initialState = Object.keys(data).length
+  ? { isLoading: false, error: null, success: true, token, user }
+  : { isLoading: false, error: null, success: false, token: null, user: null };
 
 const authSlice = createSlice({
   name: "auth",
